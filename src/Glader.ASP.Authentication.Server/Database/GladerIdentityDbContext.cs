@@ -10,9 +10,9 @@ namespace Glader.ASP.Authentication
 	/// <summary>
 	/// See Documentation for details: https://github.com/openiddict/openiddict-core
 	/// </summary>
-	public class GladerIdentityDbContext : IdentityDbContext<GladerIdentityApplicationUser, GladerIdentityApplicationRole, int>
+	public class GladerIdentityDatabaseContext : IdentityDbContext<GladerIdentityApplicationUser, GladerIdentityApplicationRole, int>
 	{
-		public GladerIdentityDbContext(DbContextOptions<GladerIdentityDbContext> options)
+		public GladerIdentityDatabaseContext(DbContextOptions<GladerIdentityDatabaseContext> options)
 			: base(options)
 		{
 

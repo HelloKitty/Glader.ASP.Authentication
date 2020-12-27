@@ -48,7 +48,7 @@ namespace Glader.ASP.Authentication
 				options.HttpsPort = 5001;
 			});*/
 
-			services.AddDbContext<GladerIdentityDbContext>(options =>
+			services.AddDbContext<GladerIdentityDatabaseContext>(options =>
 			{
 				options.UseMySql("Server=127.0.0.1;Database=glader.auth.test;Uid=root;Pwd=test;", builder =>
 				{
@@ -62,7 +62,7 @@ namespace Glader.ASP.Authentication
 			//Below is the OpenIddict registration
 			//This is the recommended setup from the official Github: https://github.com/openiddict/openiddict-core
 			services.AddIdentity<GladerIdentityApplicationUser, GladerIdentityApplicationRole>()
-				.AddEntityFrameworkStores<GladerIdentityDbContext>()
+				.AddEntityFrameworkStores<GladerIdentityDatabaseContext>()
 				.AddDefaultTokenProviders();
 
 			//For some reason I can't figure out how to get the JWT middleware to spit out sub claims
@@ -92,7 +92,7 @@ namespace Glader.ASP.Authentication
 					// Configure OpenIddict to use the Entity Framework Core stores and models.
 					// Note: call ReplaceDefaultEntities() to replace the default OpenIddict entities.
 					options.UseEntityFrameworkCore()
-						.UseDbContext<GladerIdentityDbContext>()
+						.UseDbContext<GladerIdentityDatabaseContext>()
 						.ReplaceDefaultEntities<int>();
 				})
 				.AddServer(options =>

@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Glader.ASP.Authentication.Application.Migrations
 {
-    [DbContext(typeof(GladerIdentityDbContext))]
-    partial class GladerIdentityDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(GladerIdentityDatabaseContext))]
+    partial class GladerIdentityDatabaseContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Glader.ASP.Authentication.Application.Migrations
 {
-    [DbContext(typeof(GladerIdentityDbContext))]
+    [DbContext(typeof(GladerIdentityDatabaseContext))]
     [Migration("20201227015306_InitialAuthMigration")]
     partial class InitialAuthMigration
     {
