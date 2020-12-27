@@ -2,6 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.0.1</Version>
+    <Authors>Andrew Blakely, Glader</Authors>
+    <Product>Glader.ASP.Authentication</Product>
+    <Description>Glader.ASP.Authentication is a basic OAuth/Identity/JWT library for simple Authentication needs. Provides a quality Refit HTTP client interface as well as Entity Framework Core Database, Repository and ASP Controller for doing simple authentication and authorization.</Description>
+    <PackageProjectUrl>https://github.com/HelloKitty/Glader.ASP.Authentication</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/HelloKitty/Glader.ASP.Authentication</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Glader ASP Auth Authentication Authorization Login</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>
