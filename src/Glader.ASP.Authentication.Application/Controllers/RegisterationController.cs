@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace GladMMO
+namespace Glader.ASP.Authentication
 {
 	[Route("api/registration")]
 	public class RegistrationController : Controller
