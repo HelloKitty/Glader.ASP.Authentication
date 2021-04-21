@@ -34,16 +34,20 @@ namespace Glader.ASP.Authentication
 
 		private ILogger<AuthenticationController> Logger { get; }
 
+		private IEnumerable<IAuthorizedClaimsAppender> ClaimsAppenders { get; }
+
 		public AuthenticationController(
 			IOptions<IdentityOptions> identityOptions,
 			SignInManager<GladerIdentityApplicationUser> signInManager,
 			UserManager<GladerIdentityApplicationUser> userManager, 
-			ILogger<AuthenticationController> logger)
+			ILogger<AuthenticationController> logger, 
+			IEnumerable<IAuthorizedClaimsAppender> claimsAppenders)
 		{
 			IdentityOptions = identityOptions ?? throw new ArgumentNullException(nameof(identityOptions));
 			SignInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
 			UserManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+			ClaimsAppenders = claimsAppenders ?? throw new ArgumentNullException(nameof(claimsAppenders));
 		}
 
 		internal async Task<IActionResult> Authenticate(string username,
@@ -194,6 +198,9 @@ namespace Glader.ASP.Authentication
 
 				claim.SetDestinations(destinations);
 			}
+
+			foreach (var appender in ClaimsAppenders)
+				await appender.AppendClaimsAsync(new AuthorizationClaimsAppenderContext(Request, principal));
 
 			return ticket;
 		}
