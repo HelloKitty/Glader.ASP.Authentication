@@ -21,6 +21,8 @@ namespace Glader.ASP.Authentication
 	//Copied from GladMMO.
 	//From an old OpenIddict OAuth sample and a slightly modified version that I personally use
 	//in https://github.com/GladLive/GladLive.Authentication/blob/master/src/GladLive.Authentication.OAuth/Controllers/AuthorizationController.cs
+	[ApiController]
+	[NonController]
 	public class DefaultAuthenticationController : BaseAuthenticationController
 	{
 		private IOptions<IdentityOptions> IdentityOptions { get; }
@@ -43,6 +45,7 @@ namespace Glader.ASP.Authentication
 		}
 
 		/// <inheritdoc />
+		[NonAction]
 		protected internal override async Task<IActionResult> Authenticate(string username,
 			string password,
 			IEnumerable<string> scopes)
@@ -123,12 +126,14 @@ namespace Glader.ASP.Authentication
 			return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
 		}
 
+		[NonAction]
 		protected override bool ShouldIncludeClaim(Claim claim)
 		{
 			if(claim == null) throw new ArgumentNullException(nameof(claim));
 			return claim.Type == IdentityOptions.Value.ClaimsIdentity.SecurityStampClaimType;
 		}
 
+		[NonAction]
 		protected override async Task<ClaimsPrincipal> CreateUserPrincipalAsync(GladerIdentityApplicationUser user)
 		{
 			if (user == null) throw new ArgumentNullException(nameof(user));

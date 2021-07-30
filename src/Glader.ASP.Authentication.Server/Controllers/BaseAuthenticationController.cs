@@ -17,6 +17,8 @@ namespace Glader.ASP.Authentication
 	/// <summary>
 	/// Base Authentication Controller implementation.
 	/// </summary>
+	[ApiController]
+	[NonController]
 	[Route(AUTHENTICATION_ROUTE_VALUE)]
 	public abstract class BaseAuthenticationController : Controller
 	{
@@ -40,8 +42,10 @@ namespace Glader.ASP.Authentication
 		/// <param name="password">The password.</param>
 		/// <param name="scopes">Requested scopes.</param>
 		/// <returns></returns>
+		[NonAction]
 		protected internal abstract Task<IActionResult> Authenticate(string username, string password, IEnumerable<string> scopes);
 
+		[NonAction]
 		protected abstract Task<ClaimsPrincipal> CreateUserPrincipalAsync(GladerIdentityApplicationUser user);
 
 		[HttpPost]
@@ -64,6 +68,7 @@ namespace Glader.ASP.Authentication
 			});
 		}
 
+		[NonAction]
 		protected virtual async Task<AuthenticationTicket> CreateTicketAsync(IEnumerable<string> scopes, GladerIdentityApplicationUser user)
 		{
 			// Create a new ClaimsPrincipal containing the claims that
@@ -119,6 +124,7 @@ namespace Glader.ASP.Authentication
 			return ticket;
 		}
 
+		[NonAction]
 		protected abstract bool ShouldIncludeClaim(Claim claim);
 	}
 }
