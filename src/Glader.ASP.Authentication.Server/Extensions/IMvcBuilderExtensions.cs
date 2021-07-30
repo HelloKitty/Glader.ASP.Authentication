@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Glader.Essentials;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,25 +23,7 @@ namespace Glader.ASP.Authentication
 		{
 			if(builder == null) throw new ArgumentNullException(nameof(builder));
 
-			//See AddControllersAsServices: https://github.com/aspnet/Mvc/blob/747420e5aa7cc2c7834cfb9731510286ded6fc03/src/Microsoft.AspNetCore.Mvc.Core/DependencyInjection/MvcCoreMvcCoreBuilderExtensions.cs#L107
-			builder.ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new GenericControllerFeatureProvider()));
-
-			return builder;
-		}
-
-		/// <summary>
-		/// ASP Core feature provider that registers a health check controller.
-		/// </summary>
-		private class GenericControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
-		{
-			/// <inheritdoc />
-			public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
-			{
-				//We need to check this because, for some reason, this could be called twice? Was registered twice better for some reason
-				//So don't remove this check
-				if(!feature.Controllers.Contains(typeof(DefaultAuthenticationController).GetTypeInfo()))
-					feature.Controllers.Add(typeof(DefaultAuthenticationController).GetTypeInfo());
-			}
+			return builder.RegisterController<DefaultAuthenticationController>();
 		}
 	}
 }
