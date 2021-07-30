@@ -25,5 +25,19 @@ namespace Glader.ASP.Authentication
 
 			return builder.RegisterController<DefaultAuthenticationController>();
 		}
+
+		/// <summary>
+		/// Registers the a custom <see cref="BaseAuthenticationController"/> with the MVC
+		/// controllers. See controller documentation for what it does and how it works.
+		/// </summary>
+		/// <param name="builder"></param>
+		/// <returns></returns>
+		public static IMvcBuilder RegisterAuthenticationController<TAuthenticationControllerType>(this IMvcBuilder builder)
+			where TAuthenticationControllerType : BaseAuthenticationController
+		{
+			if(builder == null) throw new ArgumentNullException(nameof(builder));
+
+			return builder.RegisterController<DefaultAuthenticationController>();
+		}
 	}
 }
