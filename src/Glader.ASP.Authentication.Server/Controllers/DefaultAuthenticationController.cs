@@ -21,36 +21,29 @@ namespace Glader.ASP.Authentication
 	//Copied from GladMMO.
 	//From an old OpenIddict OAuth sample and a slightly modified version that I personally use
 	//in https://github.com/GladLive/GladLive.Authentication/blob/master/src/GladLive.Authentication.OAuth/Controllers/AuthorizationController.cs
-	[Route(AUTHENTICATION_ROUTE_VALUE)]
-	public class AuthenticationController : Controller
+	public class DefaultAuthenticationController : BaseAuthenticationController
 	{
-		internal const string AUTHENTICATION_ROUTE_VALUE = "api/auth";
-
 		private IOptions<IdentityOptions> IdentityOptions { get; }
 
 		private SignInManager<GladerIdentityApplicationUser> SignInManager { get; }
 
 		private UserManager<GladerIdentityApplicationUser> UserManager { get; }
 
-		private ILogger<AuthenticationController> Logger { get; }
-
-		private IEnumerable<IAuthorizedClaimsAppender> ClaimsAppenders { get; }
-
-		public AuthenticationController(
+		public DefaultAuthenticationController(
 			IOptions<IdentityOptions> identityOptions,
 			SignInManager<GladerIdentityApplicationUser> signInManager,
 			UserManager<GladerIdentityApplicationUser> userManager, 
-			ILogger<AuthenticationController> logger, 
+			ILogger<DefaultAuthenticationController> logger, 
 			IEnumerable<IAuthorizedClaimsAppender> claimsAppenders)
+			: base(logger, claimsAppenders)
 		{
 			IdentityOptions = identityOptions ?? throw new ArgumentNullException(nameof(identityOptions));
 			SignInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
 			UserManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-			ClaimsAppenders = claimsAppenders ?? throw new ArgumentNullException(nameof(claimsAppenders));
 		}
 
-		internal async Task<IActionResult> Authenticate(string username,
+		/// <inheritdoc />
+		protected internal override async Task<IActionResult> Authenticate(string username,
 			string password,
 			IEnumerable<string> scopes)
 		{
@@ -130,79 +123,16 @@ namespace Glader.ASP.Authentication
 			return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
 		}
 
-		[HttpPost]
-		[Produces("application/json")]
-		public async Task<IActionResult> Exchange()
+		protected override bool ShouldIncludeClaim(Claim claim)
 		{
-			//Change based on: https://github.com/openiddict/openiddict-core/blob/dev/samples/Mvc.Server/Controllers/AuthorizationController.cs#L59
-			//If you try to do it as a parameter then you'll get a grant_type failure for some reason.
-			OpenIddictRequest authRequest = HttpContext.GetOpenIddictServerRequest() ?? throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
-
-			if (authRequest.IsPasswordGrantType())
-			{
-				return await Authenticate(authRequest.Username, authRequest.Password, authRequest.GetScopes());
-			}
-
-			return BadRequest(new OpenIddictResponse()
-			{
-				Error = OpenIddictConstants.Errors.UnsupportedGrantType,
-				ErrorDescription = "The specified grant type is not supported."
-			});
+			if(claim == null) throw new ArgumentNullException(nameof(claim));
+			return claim.Type == IdentityOptions.Value.ClaimsIdentity.SecurityStampClaimType;
 		}
-		
-		private async Task<AuthenticationTicket> CreateTicketAsync(IEnumerable<string> scopes, GladerIdentityApplicationUser user)
+
+		protected override async Task<ClaimsPrincipal> CreateUserPrincipalAsync(GladerIdentityApplicationUser user)
 		{
-			// Create a new ClaimsPrincipal containing the claims that
-			// will be used to create an id_token, a token or a code.
-			var principal = await SignInManager.CreateUserPrincipalAsync(user);
-
-			// Create a new authentication ticket holding the user identity.
-			AuthenticationTicket ticket = new AuthenticationTicket(principal,
-				new Microsoft.AspNetCore.Authentication.AuthenticationProperties(),
-				OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-
-			// Set the list of scopes granted to the client application.
-			ticket.Principal.SetScopes(new[]
-			{
-				OpenIddictConstants.Scopes.OpenId,
-				OpenIddictConstants.Scopes.Profile,
-				OpenIddictConstants.Scopes.Roles
-			}.Intersect(scopes.Concat(new string[1] { OpenIddictConstants.Scopes.OpenId }))); //HelloKitty: Always include the OpenId, it's required for the Playfab authentication
-
-			ticket.Principal.SetResources("auth-server");
-
-			// Note: by default, claims are NOT automatically included in the access and identity tokens.
-			// To allow OpenIddict to serialize them, you must attach them a destination, that specifies
-			// whether they should be included in access tokens, in identity tokens or in both.
-			foreach (var claim in ticket.Principal.Claims)
-			{
-				// Never include the security stamp in the access and identity tokens, as it's a secret value.
-				if (claim.Type == IdentityOptions.Value.ClaimsIdentity.SecurityStampClaimType)
-				{
-					continue;
-				}
-
-				var destinations = new List<string>
-				{
-					OpenIddictConstants.Destinations.AccessToken
-				};
-
-				// Only add the iterated claim to the id_token if the corresponding scope was granted to the client application.
-				// The other claims will only be added to the access_token, which is encrypted when using the default format.
-				if ((claim.Type == OpenIddictConstants.Claims.Name && ticket.Principal.HasScope(OpenIddictConstants.Scopes.Profile)) ||
-					(claim.Type == OpenIddictConstants.Claims.Email && ticket.Principal.HasScope(OpenIddictConstants.Scopes.Email)) ||
-					(claim.Type == OpenIddictConstants.Claims.Role && ticket.Principal.HasScope(OpenIddictConstants.Claims.Role)))
-				{
-					destinations.Add(OpenIddictConstants.Destinations.IdentityToken);
-				}
-
-				claim.SetDestinations(destinations);
-			}
-
-			foreach (var appender in ClaimsAppenders)
-				await appender.AppendClaimsAsync(new AuthorizationClaimsAppenderContext(Request, principal));
-
-			return ticket;
+			if (user == null) throw new ArgumentNullException(nameof(user));
+			return await SignInManager.CreateUserPrincipalAsync(user);
 		}
 	}
 }

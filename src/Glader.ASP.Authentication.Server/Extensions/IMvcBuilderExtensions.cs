@@ -13,7 +13,7 @@ namespace Glader.ASP.Authentication
 	public static class IMvcBuilderExtensions
 	{
 		/// <summary>
-		/// Registers the general <see cref="AuthenticationController"/> with the MVC
+		/// Registers the general <see cref="DefaultAuthenticationController"/> with the MVC
 		/// controllers. See controller documentation for what it does and how it works.
 		/// </summary>
 		/// <param name="builder"></param>
@@ -38,8 +38,8 @@ namespace Glader.ASP.Authentication
 			{
 				//We need to check this because, for some reason, this could be called twice? Was registered twice better for some reason
 				//So don't remove this check
-				if(!feature.Controllers.Contains(typeof(AuthenticationController).GetTypeInfo()))
-					feature.Controllers.Add(typeof(AuthenticationController).GetTypeInfo());
+				if(!feature.Controllers.Contains(typeof(DefaultAuthenticationController).GetTypeInfo()))
+					feature.Controllers.Add(typeof(DefaultAuthenticationController).GetTypeInfo());
 			}
 		}
 	}
