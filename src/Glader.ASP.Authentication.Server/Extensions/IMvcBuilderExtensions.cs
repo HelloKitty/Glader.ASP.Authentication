@@ -37,7 +37,7 @@ namespace Glader.ASP.Authentication
 		{
 			if(builder == null) throw new ArgumentNullException(nameof(builder));
 
-			return builder.RegisterController<DefaultAuthenticationController>();
+			return builder.RegisterController<TAuthenticationControllerType>();
 		}
 	}
 }
