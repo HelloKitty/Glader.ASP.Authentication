@@ -46,7 +46,7 @@ namespace Glader.ASP.Authentication
 
 		[HttpPost]
 		[Produces("application/json")]
-		public virtual async Task<IActionResult> Exchange()
+		public async Task<IActionResult> Exchange()
 		{
 			//Change based on: https://github.com/openiddict/openiddict-core/blob/dev/samples/Mvc.Server/Controllers/AuthorizationController.cs#L59
 			//If you try to do it as a parameter then you'll get a grant_type failure for some reason.
