@@ -65,6 +65,7 @@ namespace Glader.ASP.Authentication
 					options.SetTokenEndpointUris("/api/auth");
 					options.AllowPasswordFlow(); // Allow client applications to use the grant_type=password flow.
 					options.AllowRefreshTokenFlow();
+					options.SetAccessTokenLifetime(TimeSpan.FromDays(7));
 
 					//TODO: Support real certs.
 					// Register the signing and encryption credentials.
