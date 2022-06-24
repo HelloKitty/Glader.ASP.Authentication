@@ -86,7 +86,6 @@ namespace Glader.ASP.Authentication
 		{
 			if(string.IsNullOrWhiteSpace(userName)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(userName));
 			if(string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(password));
-			if(string.IsNullOrWhiteSpace(clientId)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(clientId));
 			if(string.IsNullOrWhiteSpace(grantType)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(grantType));
 
 			UserName = userName;
