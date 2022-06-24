@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Glader.ASP.Authentication</RootNamespace>
-    <Version>0.0.10</Version>
+    <Version>0.0.15</Version>
     <Authors>Andrew Blakely, Glader</Authors>
     <Product>Glader.ASP.Authentication</Product>
     <Description>Glader.ASP.Authentication is a basic OAuth/Identity/JWT library for simple Authentication needs. Provides a quality Refit HTTP client interface as well as Entity Framework Core Database, Repository and ASP Controller for doing simple authentication and authorization.</Description>
