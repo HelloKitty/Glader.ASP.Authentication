@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +16,12 @@ namespace Glader.ASP.Authentication
 		/// A call to UseAuthentication is still required in the request pipeline.
 		/// </summary>
 		/// <param name="services"></param>
+		/// <param name="signingCert">The cert for signing. Otherwise will use temp dev cert.</param>
+		/// <param name="requireClientId">Indicates if authentication should require the OpenIddict ClientId.</param>
 		/// <returns></returns>
-		public static IServiceCollection RegisterGladerIdentity(this IServiceCollection services)
+		public static IServiceCollection RegisterGladerIdentity(this IServiceCollection services, 
+			X509Certificate2 signingCert = null,
+			bool requireClientId = true)
 		{
 			if (services == null) throw new ArgumentNullException(nameof(services));
 
@@ -63,8 +68,12 @@ namespace Glader.ASP.Authentication
 
 					//TODO: Support real certs.
 					// Register the signing and encryption credentials.
-					options.AddDevelopmentEncryptionCertificate()
-						.AddDevelopmentSigningCertificate();
+					if (signingCert != null)
+						options.AddSigningCertificate(signingCert)
+							.AddEncryptionCertificate(signingCert);
+					else 
+						options.AddDevelopmentEncryptionCertificate()
+							.AddDevelopmentSigningCertificate();
 
 					//TODO: Reimplement issuer.
 					//options.SetIssuer(new Uri(@"https://auth.vrguardians.net"));
@@ -82,10 +91,8 @@ namespace Glader.ASP.Authentication
 						.EnableTokenEndpointPassthrough()
 						.DisableTransportSecurityRequirement(); // During development, you can disable the HTTPS requirement.
 
-					// Note: if you don't want to specify a client_id when sending
-					// a token or revocation request, uncomment the following line:
-					//
-					// options.AcceptAnonymousClients();
+					if (!requireClientId)
+						options.AcceptAnonymousClients();
 
 					// Note: if you want to process authorization and token requests
 					// that specify non-registered scopes, uncomment the following line:
