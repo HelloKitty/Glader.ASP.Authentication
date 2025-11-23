@@ -52,7 +52,8 @@ namespace Glader.ASP.Authentication
 			//RegisterAuthenticationDatabase and RegisterGladerIdentity are required to use the Auth library.
 			services.RegisterAuthenticationDatabase(options =>
 			{
-				options.UseMySql("Server=127.0.0.1;Database=glader.auth.test;Uid=root;Pwd=test;", builder =>
+				var connectionString = "Server=127.0.0.1;Database=glader.auth.test;Uid=root;Pwd=test;";
+				options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), builder =>
 				{
 					//Required for external migrations to run.
 					builder.MigrationsAssembly(GetType().Assembly.FullName);
